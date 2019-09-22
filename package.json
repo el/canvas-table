@@ -1,0 +1,29 @@
+{
+    "author": "Eliz Kilic",
+    "dependencies": {},
+    "description": "Extends markdown-it plugin with various plugins",
+    "devDependencies": {
+        "@types/mocha": "^5.0.0",
+        "@types/node": "^12.0.0",
+        "canvas": "^2.5.0",
+        "chai": "^4.2.0",
+        "md5": "^2.2.1",
+        "mocha": "^5.0.0",
+        "ts-node": "^7.0.1",
+        "typescript": "^3.6.0"
+    },
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "name": "canvas-table",
+    "peerDependencies": {
+        "canvas": "^2.5.0"
+    },
+    "repository": "github:el/canvas-table",
+    "scripts": {
+        "build": "tsc",
+        "clean": "rm -rf dist; rm -f test/*.png",
+        "test": "node_modules/mocha/bin/_mocha --require ts-node/register/transpile-only test/*.spec.ts"
+    },
+    "version": "0.0.1"
+}

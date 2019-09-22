@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "alwaysStrict": true,
+        "baseUrl": ".",
+        "declaration": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "jsx": "react",
+        "lib": [
+            "es6",
+            "dom",
+            "dom.iterable",
+            "scripthost",
+            "esnext.asynciterable"
+        ],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "outDir": "./dist/",
+        "preserveConstEnums": true,
+        "removeComments": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "sourceMap": true,
+        "target": "es5"
+    },
+    "files": ["lib/index.ts"]
+}
