@@ -2,7 +2,7 @@ export type CTConfig =
 {
     data: CTData;
     columns: CTColumn[];
-    options?: Partial<CTPassedOptions>;
+    options?: CTOptions;
 };
 
 export type CTData = string[][];
@@ -13,21 +13,21 @@ export type CTColumn =
     title: string
 };
 
-export type CTPassedOptions =
+export type CTOptions =
 {
-    borders: Partial<CTBorders>;
-    header: Partial<CTHeader>;
-    cell: Partial<CTCell>;
-    background: string;
-    devicePixelRatio: number;
-    fader: Partial<CTFader>;
-    fit: boolean;
-    padding: Partial<CTPadding>;
-    subtitle: Partial<CTTitle>;
-    title: Partial<CTTitle>;
+    borders?: Partial<CTBorders>;
+    header?: Partial<CTHeader>;
+    cell?: Partial<CTCell>;
+    background?: string;
+    devicePixelRatio?: number;
+    fader?: Partial<CTFader>;
+    fit?: boolean;
+    padding?: Partial<CTPadding>;
+    subtitle?: Partial<CTTitle>;
+    title?: Partial<CTTitle>;
 };
 
-export type CTOptions =
+export type CTInternalOptions =
 {
     borders: CTBorders;
     header: CTHeader;

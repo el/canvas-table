@@ -1,6 +1,6 @@
-import { CTOptions } from "./types";
+import { CTInternalOptions } from "./types";
 
-export const defaultOptions: CTOptions = {
+export const defaultOptions: CTInternalOptions = {
     borders: {
         header: { color: "#ccc", width: 1 }
     },

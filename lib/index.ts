@@ -1,7 +1,7 @@
 import { Canvas } from "canvas";
 import defaultOptions from "./defaultOptions";
 import { writeFile } from "fs";
-import { CTConfig, CTData, CTOptions, CTColumn, CTTitle, CTPadding, CTExtractedPadding, CTTableDimensions } from "./types"
+import { CTConfig, CTData, CTInternalOptions, CTColumn, CTTitle, CTPadding, CTExtractedPadding, CTTableDimensions } from "./types"
 
 const isNode = typeof window === 'undefined';
 
@@ -25,7 +25,7 @@ export class CanvasTable
     private data: CTData;
     private horizontalTotalPadding = 0;
     private isGenerated = false;
-    private options: CTOptions;
+    private options: CTInternalOptions;
     private tableHeight = 0;
     private tableStartX = 0;
     private tableStartY = 0;
