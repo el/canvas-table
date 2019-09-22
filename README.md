@@ -1,9 +1,9 @@
 # Canvas Table
 Fast table implementation in Canvas
 
-## Demo
+## Screenshots
 
-Default options: https://codepen.io/elizzk/pen/qBWLKmM
+![Sample](assets/test-account.png)
 
 ## Installation
 
@@ -60,7 +60,7 @@ const data: CTData = [
 ];
 ```
 
-**columns **(required)
+**columns** (required)
 
 ```ts
 const columns: CTColumns = [

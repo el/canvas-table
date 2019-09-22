@@ -87,6 +87,51 @@ describe('CanvasTable', async() =>
         await ct.renderToFile(join(testDirectory,"test-small.png"));
     });
 
+    it('renders a table with lots of data', async () =>
+    {
+        const canvas = createCanvas(640, 250);
+
+        const config: CTConfig = {
+            columns: [
+                { title: "ID" },
+                { title: "Date", options: { textAlign: "right" } },
+                { title: "Amount", options: { textAlign: "right" } },
+                { title: "Type" },
+                { title: "Category" }
+            ],
+            data: [
+                ["1","4/20/2018","$638.45","Deposit","Fuel"],
+                ["2","1/9/2018","$627.71","Deposit","Technology"],
+                ["3","8/8/2019","$437.48","Withdrawal","Technology"],
+                ["4","6/1/2018","$281.74","Deposit","Technology"],
+                ["5","12/23/2018","$408.28","Deposit","Food"],
+                ["6","4/27/2018","$901.42","Withdrawal","Technology"],
+                ["7","2/26/2019","$213.48","Deposit","Fuel"],
+                ["8","6/8/2018","$428.49","Withdrawal","Entertainment"],
+                ["9","10/31/2018","$37.53","Withdrawal","Entertainment"],
+                ["10","2/23/2019","$937.4","Deposit","Clothes"],
+                ["11","4/20/2019","$150.56","Deposit","Entertainment"],
+                ["12","7/14/2018","$474.59","Withdrawal","Technology"]
+            ],
+            options: {
+                borders: {
+                    table: { color: "#aaa", width: 1 }
+                },
+                devicePixelRatio: 2,
+                fit: true,
+                header: {
+                    color: "#9c26af"
+                },
+                title: {
+                    text: "Account Status"
+                }
+            }
+        };
+        const ct = new CanvasTable(canvas, config);
+        await ct.generateTable();
+        await ct.renderToFile(join(testDirectory,"test-account.png"));
+    });
+
     it('renders a table with a fader', async () =>
     {
         const canvas = createCanvas(90, 90);
