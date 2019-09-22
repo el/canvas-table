@@ -1,5 +1,5 @@
 # Canvas Table
-Fast table implementation in Canvas
+Fast table implementation in Canvas with string truncating support. Supports both browser [HTML5 canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) and [node-canvas](https://github.com/Automattic/node-canvas)
 
 ## Screenshots
 
