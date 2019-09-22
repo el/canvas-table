@@ -1,5 +1,9 @@
 # Canvas Table
-Fast table implementation in Canvas with string truncating support. Supports both browser [HTML5 canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) and [node-canvas](https://github.com/Automattic/node-canvas)
+Customizable, small and fast table implementation in Canvas with string truncating support. Supports both browser [HTML5 canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) and [node-canvas](https://github.com/Automattic/node-canvas)
+
+![](https://img.shields.io/bundlephobia/min/canvas-table) ![](https://img.shields.io/npm/v/canvas-table) ![](https://img.shields.io/npm/types/canvas-table) ![](https://img.shields.io/npm/l/canvas-table) 
+
+NPM: 
 
 ## Screenshots
 
