@@ -3,6 +3,8 @@ import defaultOptions from "./defaultOptions";
 import { writeFile } from "fs";
 import { CTConfig, CTData, CTInternalOptions, CTColumn, CTTitle, CTPadding, CTExtractedPadding, CTTableDimensions } from "./types"
 
+export * from "./types";
+
 const isNode = typeof window === 'undefined';
 
 export class CanvasTable
