@@ -16,7 +16,7 @@ export class CanvasTable
         "CanvasTable has not been generated. Please call generateTable() first.";
     private static readonly TRANSPARENT_COLOR = !isNode ? "rgba(255,255,255,0)" : "transparent";
 
-    private canvas_: Canvas;
+    private canvas_: Canvas | HTMLCanvasElement;
     private canvasHeight: number;
     private canvasWidth: number;
     private columnOuterWidths: number[] = [];
@@ -35,13 +35,13 @@ export class CanvasTable
     private x = 0;
     private y = 0;
 
-    constructor(canvas: Canvas, config: CTConfig)
+    constructor(canvas: Canvas | HTMLCanvasElement, config: CTConfig)
     {
         this.canvas_ = canvas;
         this.canvasHeight = canvas.height;
         this.canvasWidth = canvas.width;
         this.config = config;
-        this.ctx = canvas.getContext("2d");
+        this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
         this.populateOptions();
         this.calculateTableDimensions();
         if (this.options.background)

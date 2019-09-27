@@ -1,11 +1,11 @@
-import { CanvasTable } from '../lib';
+import { CanvasTable } from "../lib";
 import { createCanvas, Canvas } from "canvas";
-import { CTConfig, CTData, CTColumn } from '../lib/types';
-import { join } from 'path';
-import { FakeCanvas } from './fakeCanvas';
+import { CTConfig, CTData, CTColumn } from "../lib/types";
+import { join } from "path";
+import { FakeCanvas } from "./fakeCanvas";
 import { expect } from "chai";
 
-describe('CanvasTable', async() =>
+describe("CanvasTable", async() =>
 {
     const testDirectory = __dirname;
     const data: CTData = [
@@ -19,7 +19,7 @@ describe('CanvasTable', async() =>
         {title: "Net", options: { textAlign: "right" }}
     ];
     
-    it('renders a table', async () =>
+    it("renders a table", async () =>
     {
         const canvas = createCanvas(640, 250);
         const config: CTConfig = { columns, data };
@@ -28,7 +28,7 @@ describe('CanvasTable', async() =>
         await ct.renderToFile(join(testDirectory,"test-table.png"));
     });
     
-    it('renders a table with a title', async () =>
+    it("renders a table with a title", async () =>
     {
         const canvas = createCanvas(640, 250);
         const config: CTConfig = { columns, data, options: { title: {text: "Title"} } };
@@ -37,7 +37,7 @@ describe('CanvasTable', async() =>
         await ct.renderToFile(join(testDirectory,"test-table.png"));
     });
     
-    it('renders a fitted table', async () =>
+    it("renders a fitted table", async () =>
     {
         const canvas = createCanvas(640, 250);
         const config: CTConfig = { columns, data, options: { fit: true } };
@@ -46,7 +46,7 @@ describe('CanvasTable', async() =>
         await ct.renderToFile(join(testDirectory,"test-fit.png"));
     });
 
-    it('renders a table with long data', async () =>
+    it("renders a table with long data", async () =>
     {
         const canvas = createCanvas(640, 250);
         const config: CTConfig = { data: [
@@ -58,7 +58,7 @@ describe('CanvasTable', async() =>
         await ct.renderToFile(join(testDirectory,"test-long.png"));
     });
 
-    it('renders a table with long data', async () =>
+    it("renders a table with long data", async () =>
     {
         const canvas = createCanvas(640, 250);
         const config: CTConfig = {
@@ -78,7 +78,7 @@ describe('CanvasTable', async() =>
         await ct.renderToFile(join(testDirectory,"test-border.png"));
     });
 
-    it('renders a table with small canvas', async () =>
+    it("renders a table with small canvas", async () =>
     {
         const canvas = createCanvas(90, 90);
         const config: CTConfig = { columns, data, options: { fader: undefined, padding: 0 }};
@@ -87,7 +87,7 @@ describe('CanvasTable', async() =>
         await ct.renderToFile(join(testDirectory,"test-small.png"));
     });
 
-    it('renders a table with lots of data', async () =>
+    it("renders a table with lots of data", async () =>
     {
         const canvas = createCanvas(640, 250);
 
@@ -132,7 +132,7 @@ describe('CanvasTable', async() =>
         await ct.renderToFile(join(testDirectory,"test-account.png"));
     });
 
-    it('renders a table with a fader', async () =>
+    it("renders a table with a fader", async () =>
     {
         const canvas = createCanvas(90, 90);
         const config: CTConfig = {
@@ -152,7 +152,7 @@ describe('CanvasTable', async() =>
         await ct.renderToFile(join(testDirectory,"test-small.png"));
     });
     
-    it('renders a table', async () =>
+    it("renders a table", async () =>
     {
         const canvas = new FakeCanvas(640, 250);
         const config: CTConfig = { columns, data: [["1", "2", "3"]] };

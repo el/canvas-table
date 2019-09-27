@@ -3,6 +3,9 @@ Customizable, small and fast table implementation in Canvas with string truncati
 
 ![](https://img.shields.io/bundlephobia/min/canvas-table) <a href="https://www.npmjs.com/package/canvas-table">![](https://img.shields.io/npm/v/canvas-table)</a> ![](https://img.shields.io/npm/types/canvas-table) ![](https://img.shields.io/npm/l/canvas-table) 
 
+## Demo
+
+[CodeSandbox/canvas-table](https://codesandbox.io/s/canvas-table-6q65o?fontsize=14&hidenavigation=1)
 
 ## Screenshots
 
