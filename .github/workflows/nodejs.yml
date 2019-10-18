@@ -24,3 +24,12 @@ jobs:
         npm test
       env:
         CI: true
+    - name: send message
+      uses: appleboy/telegram-action@master
+      env:
+        TELEGRAM_TOKEN: ${{ secrets.telegram_token }}
+        TELEGRAM_TO: ${{ secrets.telegram_to }}
+      with:
+        message: |
+          ${{ github.repo }} repo with ${{ github.event_name }} event triggered,
+          final status is {{ job.status }}.
