@@ -22,6 +22,7 @@ export type CTOptions =
     devicePixelRatio?: number;
     fader?: Partial<CTFader>;
     fit?: boolean;
+    minCharWidth?: number;
     padding?: Partial<CTPadding>;
     subtitle?: Partial<CTTitle>;
     title?: Partial<CTTitle>;
