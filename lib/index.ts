@@ -262,7 +262,7 @@ export class CanvasTable
     private generateRows(): void
     {
         const { canvasHeight, columnOuterWidths, columns, computedOuterWidths, ctx, data, horizontalTotalPadding,
-            options: { cell, header }, tableStartX } = this;
+            options: { cell, header, minCharWidth }, tableStartX } = this;
         const cellPadding = this.calculatePadding(cell.padding);
 
         for (let rowIndex = 0; rowIndex < data.length; rowIndex++)
@@ -291,7 +291,7 @@ export class CanvasTable
                 ctx.textAlign = textAlign;
                 if (outerWidth > computedOuterWidth)
                 {
-                    const isFat = () => ctx.measureText(cellValue.length > 3
+                    const isFat = () => ctx.measureText(cellValue.length > minCharWidth
                         ? `${cellValue}${CanvasTable.ELLIPSIS}`
                         : `${cellValue}.`).width > (computedOuterWidth - horizontalTotalPadding);
                     if (isFat())
@@ -300,7 +300,8 @@ export class CanvasTable
                         {
                             cellValue = cellValue.slice(0, -1);;
                         }
-                        cellValue = cellValue.length > 3 ? `${cellValue}${CanvasTable.ELLIPSIS}` : `${cellValue}.`;
+                        cellValue = cellValue.length > minCharWidth
+                            ? `${cellValue}${CanvasTable.ELLIPSIS}` : `${cellValue}.`;
                     }
                 }
                 let cellX = this.x + cellPadding.left;

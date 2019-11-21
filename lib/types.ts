@@ -36,6 +36,7 @@ export type CTInternalOptions =
     devicePixelRatio: number;
     fader: CTFader;
     fit: boolean;
+    minCharWidth: number;
     padding: CTPadding;
     subtitle: CTTitle;
     title: CTTitle;
