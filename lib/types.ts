@@ -45,6 +45,7 @@ export type CTInternalOptions =
 
 export type CTTitle =
 {
+    multiline?: boolean;
     text?: string;
 } & CTTextStyle;
 

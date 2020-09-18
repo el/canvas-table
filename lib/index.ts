@@ -255,19 +255,42 @@ export class CanvasTable
         const titleLines = title.text.split("\n");
         const titleX = title.textAlign === "center" ? tableWidth/2 : 0;
         let lineIndex = 0;
-        titleLines.forEach((line) =>
-        {
-            let cellValue = line;
-            const isFat = () => ctx.measureText(`${cellValue}${CanvasTable.ELLIPSIS}`).width >
-            this.tableWidth;
-            if (isFat()) {
-                while (isFat()) {
-                    cellValue = cellValue.slice(0, -1);
-                }
-                cellValue = `${cellValue}${CanvasTable.ELLIPSIS}`;
+        const isFat = (text) => ctx.measureText(text).width > this.tableWidth;
+        titleLines.forEach((line) => {
+            const innerLines: string[] = [];
+            if (title.multiline) {
+                innerLines.push("");
+                const lineArray = line.split(" ");
+                lineArray.forEach((lineValue) =>
+                {
+                    const index = innerLines.length - 1;
+                    const nextValue = `${innerLines[index]} ${lineValue}`;
+                    if (isFat(nextValue))
+                    {
+                        innerLines.push(lineValue);
+                    }
+                    else
+                    {
+                        innerLines[index] = nextValue;
+                    }
+                });
             }
-    
-            ctx.fillText(cellValue, x + titleX, y + lineIndex++ * lineHeight);
+            else
+            {
+                let cellValue = line;
+                const valueWithEllipsis = () => `${cellValue}${CanvasTable.ELLIPSIS}`;
+                if (isFat(valueWithEllipsis()))
+                {
+                    while (isFat(valueWithEllipsis()))
+                    {
+                        cellValue = cellValue.slice(0, -1);
+                    }
+                    cellValue = valueWithEllipsis();
+                }
+                innerLines.push(cellValue);
+            }
+
+            innerLines.forEach(innerLine => ctx.fillText(innerLine, x + titleX, y + lineIndex++ * lineHeight));
         });
         this.y += lineIndex * lineHeight + lineHeight / 2;
     }

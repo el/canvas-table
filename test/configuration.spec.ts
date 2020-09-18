@@ -7,6 +7,12 @@ import { expect } from "chai";
 
 describe("CanvasTable", async() =>
 {
+    const title = "Here's to the crazy ones. The misfits. The rebels. The troublemakers. The round pegs in the square" +
+    " holes. The ones who see things differently. They're not fond of rules. And they have no respect for the status " +
+    "quo. You can quote them, disagree with them, glorify or vilify them. About the only thing you can't do is ignore" +
+    " them. Because they change things. They push the human race forward. And while some may see them as the crazy on" +
+    "es, we see genius. Because the people who are crazy enough to think they can change the world, are the ones who " +
+    "do."
     const testDirectory = __dirname;
     const data: CTData = [
         ["lorem", "200$", "300$"],
@@ -35,6 +41,24 @@ describe("CanvasTable", async() =>
         const ct = new CanvasTable(canvas, config);
         await ct.generateTable();
         await ct.renderToFile(join(testDirectory,"test-table.png"));
+    });
+    
+    it("renders a table with a long title", async () =>
+    {
+        const canvas = createCanvas(250, 250);
+        const config: CTConfig = { columns, data, options: { title: {text: title} } };
+        const ct = new CanvasTable(canvas, config);
+        await ct.generateTable();
+        await ct.renderToFile(join(testDirectory,"test-title.png"));
+    });
+    
+    it("renders a table with a long multi-line title", async () =>
+    {
+        const canvas = createCanvas(250, 400);
+        const config: CTConfig = { columns, data, options: { title: {multiline: true, text: title} } };
+        const ct = new CanvasTable(canvas, config);
+        await ct.generateTable();
+        await ct.renderToFile(join(testDirectory,"test-multi-line.png"));
     });
     
     it("renders a fitted table", async () =>
