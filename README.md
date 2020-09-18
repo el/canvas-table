@@ -144,6 +144,7 @@ const defaultOptions: CTInternalOptions = {
         fontFamily: "sans-serif",
         color: "#888888",
         lineHeight: 1,
+        multiline: false,
         // text: "",
         textAlign: "center"
     },
@@ -153,6 +154,7 @@ const defaultOptions: CTInternalOptions = {
         fontFamily: "sans-serif",
         color: "#666666",
         lineHeight: 1,
+        multiline: false,
         // text: "",
         textAlign: "center"
     }
