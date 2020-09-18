@@ -254,9 +254,22 @@ export class CanvasTable
         const lineHeight = Math.round(title.fontSize * title.lineHeight);  
         const titleLines = title.text.split("\n");
         const titleX = title.textAlign === "center" ? tableWidth/2 : 0;
-        titleLines.forEach((line, index) => 
-        ctx.fillText(line, x + titleX, y + (index*lineHeight)));
-        this.y += titleLines.length * lineHeight + lineHeight/2 ;
+        let lineIndex = 0;
+        titleLines.forEach((line) =>
+        {
+            let cellValue = line;
+            const isFat = () => ctx.measureText(`${cellValue}${CanvasTable.ELLIPSIS}`).width >
+            this.tableWidth;
+            if (isFat()) {
+                while (isFat()) {
+                    cellValue = cellValue.slice(0, -1);
+                }
+                cellValue = `${cellValue}${CanvasTable.ELLIPSIS}`;
+            }
+    
+            ctx.fillText(cellValue, x + titleX, y + lineIndex++ * lineHeight);
+        });
+        this.y += lineIndex * lineHeight + lineHeight / 2;
     }
 
     private generateRows(): void
