@@ -30,3 +30,12 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
+    - name: send message
+      uses: appleboy/telegram-action@0.0.3
+      env:
+        TELEGRAM_TOKEN: ${{ secrets.telegram_token }}
+        TELEGRAM_TO: ${{ secrets.telegram_to }}
+      with:
+        message: |
+          ${{ github.repo }} repo with ${{ github.event_name }} event triggered,
+          final status is {{ job.status }}.
