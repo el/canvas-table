@@ -1,4 +1,4 @@
-name: Node.js CI
+name: node
 
 on:
   push:
@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: [ $default-branch ]
   workflow_run:
+    branches: [ $default-branch ]
+  workflow_dispatch:
     branches: [ $default-branch ]
 
 jobs:
