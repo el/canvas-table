@@ -8,8 +8,6 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-  workflow_run:
-    branches: [ master ]
   workflow_dispatch:
     branches: [ master ]
 
