@@ -9,12 +9,13 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [15.x]
 
     steps:
-    - uses: actions/checkout@v1
+    - name: Checkout
+      uses: actions/checkout@v2.3.4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2.1.4
       with:
         node-version: ${{ matrix.node-version }}
     - name: npm install, build, and test
@@ -24,12 +25,3 @@ jobs:
         npm test
       env:
         CI: true
-    - name: send message
-      uses: appleboy/telegram-action@master
-      env:
-        TELEGRAM_TOKEN: ${{ secrets.telegram_token }}
-        TELEGRAM_TO: ${{ secrets.telegram_to }}
-      with:
-        message: |
-          ${{ github.repo }} repo with ${{ github.event_name }} event triggered,
-          final status is {{ job.status }}.
