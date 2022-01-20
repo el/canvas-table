@@ -53,7 +53,7 @@ export class CanvasTable
 
         this.columns = config.columns;
         this.data = config.data;
-        
+
         if (this.options.header && config.columns)
         {
             this.data = [ config.columns.map(column => column.title), ...this.data];
@@ -72,10 +72,10 @@ export class CanvasTable
                 this.generateTitle(title);
                 this.generateTitle(subtitle);
                 this.calculateColumnWidths();
-        
+
                 this.tableStartX = this.x;
                 this.tableStartY = this.y;
-        
+
                 this.generateRows();
                 this.generateFaders();
                 this.drawTableBorders();
@@ -96,7 +96,7 @@ export class CanvasTable
             if (this.canvas_ instanceof Canvas)
             {
                 reject(new Error(CanvasTable.NOT_AVAILABLE_ON_NODE));
-                return;   
+                return;
             }
             (this.canvas_ as any).toBlob(resolve);
         });
@@ -107,7 +107,7 @@ export class CanvasTable
         this.throwErrorIfNotGenerated();
         if (!(this.canvas_ instanceof Canvas))
         {
-            throw new Error(CanvasTable.NOT_AVAILABLE_ON_BROWSER);   
+            throw new Error(CanvasTable.NOT_AVAILABLE_ON_BROWSER);
         }
         return this.canvas_.toBuffer();
     }
@@ -129,7 +129,7 @@ export class CanvasTable
             width: this.tableWidth,
             x: this.x,
             y: this.y
-        };        
+        };
     }
 
     private calculateColumnTextWidths(): number[]
@@ -144,7 +144,7 @@ export class CanvasTable
             {
                 const [cellValue] = (row[cellIndex] || "").split("\n");
                 const option = header && rowIndex === "0" ? header : cell;
-        
+
                 ctx.font = `${option.fontWeight} ${option.fontSize}px ${option.fontFamily}`;
                 ctx.fillStyle = option.color;
                 ctx.textAlign = option.textAlign;
@@ -221,7 +221,7 @@ export class CanvasTable
         const tablePadding = this.calculatePadding(padding);
         this.tableHeight = canvasHeight - tablePadding.top - tablePadding.bottom;
         this.tableWidth = canvasWidth - tablePadding.left - tablePadding.right;
-        
+
         ctx.scale(devicePixelRatio, devicePixelRatio);
     }
 
@@ -251,7 +251,7 @@ export class CanvasTable
         ctx.font = `${title.fontWeight} ${title.fontSize}px ${title.fontFamily}`;
         ctx.fillStyle = title.color;
         ctx.textAlign = title.textAlign;
-        const lineHeight = Math.round(title.fontSize * title.lineHeight);  
+        const lineHeight = Math.round(title.fontSize * title.lineHeight);
         const titleLines = title.text.split("\n");
         const titleX = title.textAlign === "center" ? tableWidth/2 : 0;
         let lineIndex = 0;
@@ -312,8 +312,8 @@ export class CanvasTable
                 const computedOuterWidth = computedOuterWidths[cellIndex];
                 const columnOptions = columns && columns[cellIndex].options
                     ? columns[cellIndex].options : {};
-                let [cellValue] = row[cellIndex].split("\n");
-        
+                let [cellValue] = (row[cellIndex] || "").split("\n");
+
                 if (!rowIndex && header && header.background)
                 {
                     ctx.fillStyle = header.background;
@@ -354,7 +354,7 @@ export class CanvasTable
                 this.x += computedOuterWidth;
 
                 this.drawRowBorder(lineHeight);
-        
+
             }
             this.y += lineHeight;
             this.drawColumnBorder(rowIndex);
@@ -445,7 +445,7 @@ export class CanvasTable
             return;
         }
         const { borders, header, cell, fader, subtitle, title } = defaultOptions;
-        const defaultPadding = defaultOptions.padding as CTExtractedPadding; 
+        const defaultPadding = defaultOptions.padding as CTExtractedPadding;
         const padding = options.padding !== undefined ? (typeof options.padding !== "number"
             ? {...defaultPadding, ...options.padding } : options.padding) : defaultPadding;
         this.options = {
