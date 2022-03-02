@@ -40,7 +40,7 @@ describe("CanvasTable", async() =>
         const config: CTConfig = { columns, data, options: { title: {text: "Title"} } };
         const ct = new CanvasTable(canvas, config);
         await ct.generateTable();
-        await ct.renderToFile(join(testDirectory,"test-table.png"));
+        await ct.renderToFile(join(testDirectory,"test-title.png"));
     });
     
     it("renders a table with a long title", async () =>
@@ -49,7 +49,7 @@ describe("CanvasTable", async() =>
         const config: CTConfig = { columns, data, options: { title: {text: title} } };
         const ct = new CanvasTable(canvas, config);
         await ct.generateTable();
-        await ct.renderToFile(join(testDirectory,"test-title.png"));
+        await ct.renderToFile(join(testDirectory,"test-title-long.png"));
     });
     
     it("renders a table with a long multi-line title", async () =>
@@ -216,11 +216,31 @@ describe("CanvasTable", async() =>
         await ct.generateTable();
         const ctx = canvas.getContext("");
         const stack = [
-            ["scale",2,2],["fillRect",0,0,640,250],["measureText","Text"],["measureText","Expenses"],
-            ["measureText","Net"],["measureText","1"],["measureText","2"],["measureText","3"],["measureText","……"],
-            ["fillText","Text",25,25],["fillText","Expenses",37,25],["fillText","Net",48,25],["beginPath"],
-            ["moveTo",20,44.4],["lineTo",53,44.4],["stroke"],["fillText","1",25,49.4],["fillText","2",37,49.4],
-            ["fillText","3",48,49.4]
+            [ 'scale', 2, 2 ],
+            [ 'fillRect', 0, 0, 640, 250 ],
+            [ 'measureText', 'Text' ],
+            [ 'measureText', 'Expenses' ],
+            [ 'measureText', 'Net' ],
+            [ 'measureText', '1' ],
+            [ 'measureText', '2' ],
+            [ 'measureText', '3' ],
+            [ 'measureText', '……' ],
+            [ 'measureText', 'Text' ],
+            [ 'fillText', 'Text', 25, 25 ],
+            [ 'measureText', 'Expenses' ],
+            [ 'fillText', 'Expenses', 37, 25 ],
+            [ 'measureText', 'Net' ],
+            [ 'fillText', 'Net', 48, 25 ],
+            [ 'beginPath' ],
+            [ 'moveTo', 20, 44.4 ],
+            [ 'lineTo', 53, 44.4 ],
+            [ 'stroke' ],
+            [ 'measureText', '1' ],
+            [ 'fillText', '1', 25, 49.4 ],
+            [ 'measureText', '2' ],
+            [ 'fillText', '2', 37, 49.4 ],
+            [ 'measureText', '3' ],
+            [ 'fillText', '3', 48, 49.4 ]
         ];
         expect(ctx.methods()).to.have.deep.ordered.members(stack);
     });
