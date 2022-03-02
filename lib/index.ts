@@ -134,7 +134,7 @@ export class CanvasTable
 
     private calculateColumnTextWidths(): number[]
     {
-        const { ctx, data, options: { cell, header } } = this;
+        const { columns, ctx, data, options: { cell, header } } = this;
         const columnWidths = Array(data[0].length).fill(1);
 
         for (const rowIndex in data)
@@ -153,6 +153,16 @@ export class CanvasTable
                 {
                     columnWidths[cellIndex] = metrics.width;
                 }
+                const maxWidth = columns[cellIndex].options?.maxWidth;
+                const minWidth = columns[cellIndex].options?.minWidth;
+                if (maxWidth && metrics.width > maxWidth)
+                {
+                    columnWidths[cellIndex] = maxWidth;
+                }
+                if (minWidth && metrics.width < minWidth)
+                {
+                    columnWidths[cellIndex] = minWidth;
+                }
             }
         }
         return columnWidths;
@@ -160,7 +170,7 @@ export class CanvasTable
 
     private calculateColumnWidths(): void
     {
-        const { ctx, options: { cell, fit }, tableWidth } = this;
+        const { columns, ctx, options: { cell, fit }, tableWidth } = this;
 
         const columnTextWidths = this.calculateColumnTextWidths();
         const cellPadding = this.calculatePadding(cell.padding);
@@ -183,7 +193,7 @@ export class CanvasTable
             this.columnOuterWidths.forEach((columnOuterWidth, columnIndex) =>
             {
                 this.computedOuterWidths.push(columnOuterWidth);
-                if (columnOuterWidth > reservedWidth)
+                if (columnOuterWidth > reservedWidth && !columns[columnIndex].options?.minWidth)
                 {
                     fatColumnIndexes.push(columnIndex);
                     totalFatWidth = totalFatWidth + columnOuterWidth;
@@ -193,6 +203,7 @@ export class CanvasTable
                     remainingWidth = remainingWidth - columnOuterWidth;
                 }
             });
+            console.log({ fatColumnIndexes, totalFatWidth })
             fatColumnIndexes.forEach(index =>
             {
                 const columnOuterWidth = this.columnOuterWidths[index];
@@ -308,7 +319,6 @@ export class CanvasTable
             this.x = tableStartX;
             for (const cellIndex in columnOuterWidths)
             {
-                const outerWidth = columnOuterWidths[cellIndex];
                 const computedOuterWidth = computedOuterWidths[cellIndex];
                 const columnOptions = columns && columns[cellIndex].options
                     ? columns[cellIndex].options : {};
@@ -325,7 +335,8 @@ export class CanvasTable
                 const textAlign = columnOptions && columnOptions.textAlign
                     ? columnOptions.textAlign : option.textAlign;
                 ctx.textAlign = textAlign;
-                if (outerWidth > computedOuterWidth)
+                const textWidth = ctx.measureText(cellValue).width;
+                if (textWidth > computedOuterWidth)
                 {
                     const isFat = () => ctx.measureText(cellValue.length > minCharWidth
                         ? `${cellValue}${CanvasTable.ELLIPSIS}`

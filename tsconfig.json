@@ -7,7 +7,7 @@
         "experimentalDecorators": true,
         "jsx": "react",
         "lib": [
-            "es6",
+            "es2020",
             "dom",
             "dom.iterable",
             "scripthost",

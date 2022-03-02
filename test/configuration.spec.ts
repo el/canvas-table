@@ -69,6 +69,38 @@ describe("CanvasTable", async() =>
         await ct.generateTable();
         await ct.renderToFile(join(testDirectory,"test-fit.png"));
     });
+    
+    it("renders a table with min and max width", async () =>
+    {
+        const canvas = createCanvas(640, 250);
+        const config: CTConfig = {
+            columns: [
+                { title: "Text", options: { minWidth: 100 }},
+                { title: "Net amount of the transactions", options: { maxWidth: 70 }},
+                { title: "Expenses", options: { minWidth: 240 }}
+            ],
+            data
+        };
+        const ct = new CanvasTable(canvas, config);
+        await ct.generateTable();
+        await ct.renderToFile(join(testDirectory,"test-width.png"));
+    });
+    
+    it("renders a table with min and max width with a big table", async () =>
+    {
+        const canvas = createCanvas(400, 250);
+        const config: CTConfig = {
+            columns: [
+                { title: "Text"},
+                { title: "Net amount of the transactions", options: { minWidth: 250 }},
+                { title: "Expenses"}
+            ],
+            data
+        };
+        const ct = new CanvasTable(canvas, config);
+        await ct.generateTable();
+        await ct.renderToFile(join(testDirectory,"test-width-big.png"));
+    });
 
     it("renders a table with long data", async () =>
     {

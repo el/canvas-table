@@ -9,7 +9,10 @@ export type CTData = string[][];
 
 export type CTColumn =
 {
-    options?: Partial<CTCell>;
+    options?: Partial<CTCell> & {
+        maxWidth?: number;
+        minWidth?: number;
+    };
     title: string
 };
 
