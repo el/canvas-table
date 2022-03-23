@@ -12,6 +12,7 @@ export type CTColumn =
     options?: Partial<CTCell> & {
         maxWidth?: number;
         minWidth?: number;
+        customCells?: CTCustomCell[];
     };
     title: string
 };
@@ -70,6 +71,11 @@ export type CTHeader =
 {
     background?: string;
 } & CTCell;
+
+export type CTCustomCell =
+{
+    row: number;
+} & Partial<CTCell>;
 
 export type CTCell =
 {

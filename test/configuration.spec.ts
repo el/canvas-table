@@ -151,7 +151,7 @@ describe("CanvasTable", async() =>
             columns: [
                 { title: "ID" },
                 { title: "Date", options: { textAlign: "right" } },
-                { title: "Amount", options: { textAlign: "right" } },
+                { title: "Amount", options: { textAlign: "right", customCells:[{row:1, color:"green", background:"yellow"}] } },
                 { title: "Type" },
                 { title: "Category" }
             ],

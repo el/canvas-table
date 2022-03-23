@@ -329,7 +329,15 @@ export class CanvasTable
                     ctx.fillStyle = header.background;
                     ctx.fillRect(this.x, this.y, computedOuterWidth, lineHeight);
                 }
-                const option = header && !rowIndex ? header : {...cell, ...columnOptions};
+                const customCellOpt = columnOptions?.customCells?.find( el => el.row == rowIndex);
+                const cellopt = customCellOpt ? customCellOpt : {};
+
+                const option = header && !rowIndex ? header : {...cell, ...columnOptions, ...cellopt};
+                if (rowIndex &&  option.background)
+                {
+                    ctx.fillStyle = option.background;
+                    ctx.fillRect(this.x, this.y, computedOuterWidth, lineHeight);
+                }
                 ctx.font = `${option.fontWeight} ${option.fontSize}px ${option.fontFamily}`;
                 ctx.fillStyle = option.color;
                 const textAlign = columnOptions && columnOptions.textAlign
