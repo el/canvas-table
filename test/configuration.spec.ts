@@ -151,12 +151,12 @@ describe("CanvasTable", async() =>
             columns: [
                 { title: "ID" },
                 { title: "Date", options: { textAlign: "right" } },
-                { title: "Amount", options: { textAlign: "right", customCells:[{row:1, color:"green", background:"yellow"}] } },
+                { title: "Amount", options: { textAlign: "right" } },
                 { title: "Type" },
                 { title: "Category" }
             ],
             data: [
-                ["1","4/20/2018","$638.45","Deposit","Fuel"],
+                ["1","4/20/2018",{color:"green", background:"yellow", value:"$638.45"},"Deposit","Fuel"],
                 ["2","1/9/2018","$627.71","Deposit","Technology"],
                 ["3","8/8/2019","$437.48","Withdrawal","Technology"],
                 ["4","6/1/2018","$281.74","Deposit","Technology"],

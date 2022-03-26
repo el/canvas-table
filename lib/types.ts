@@ -5,14 +5,20 @@ export type CTConfig =
     options?: CTOptions;
 };
 
-export type CTData = string[][];
+export type CTCustomCell = 
+{
+     value: string;
+ } & Partial<CTCell>;
+ 
+export type CTCellData = string | CTCustomCell;
+
+export type CTData = CTCellData[][];
 
 export type CTColumn =
 {
     options?: Partial<CTCell> & {
         maxWidth?: number;
         minWidth?: number;
-        customCells?: CTCustomCell[];
     };
     title: string
 };
@@ -71,11 +77,6 @@ export type CTHeader =
 {
     background?: string;
 } & CTCell;
-
-export type CTCustomCell =
-{
-    row: number;
-} & Partial<CTCell>;
 
 export type CTCell =
 {

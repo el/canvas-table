@@ -1,7 +1,7 @@
 import { Canvas } from "canvas";
 import defaultOptions from "./defaultOptions";
 import { writeFile } from "fs";
-import { CTConfig, CTData, CTInternalOptions, CTColumn, CTTitle, CTPadding, CTExtractedPadding, CTTableDimensions } from "./types"
+import { CTConfig, CTData, CTInternalOptions, CTColumn, CTTitle, CTPadding, CTExtractedPadding, CTTableDimensions, CTCellData, CTCustomCell, CTTextStyle } from "./types"
 
 export * from "./types";
 
@@ -132,6 +132,19 @@ export class CanvasTable
         };
     }
 
+    private getCellValue(value: CTCellData): string[]
+    {
+        let realvalue = "";
+        if (typeof value === "string") {
+            realvalue = value;
+        } 
+        else if( value as CTCustomCell) 
+        {
+            realvalue = ( value as CTCustomCell).value ?? "";
+        }
+        return realvalue.split("\n");
+    }
+
     private calculateColumnTextWidths(): number[]
     {
         const { columns, ctx, data, options: { cell, header } } = this;
@@ -142,7 +155,7 @@ export class CanvasTable
             const row = data[rowIndex];
             for (const cellIndex in row)
             {
-                const [cellValue] = (row[cellIndex] || "").split("\n");
+                const [cellValue] = this.getCellValue(row[cellIndex] || "");
                 const option = header && rowIndex === "0" ? header : cell;
 
                 ctx.font = `${option.fontWeight} ${option.fontSize}px ${option.fontFamily}`;
@@ -322,17 +335,18 @@ export class CanvasTable
                 const computedOuterWidth = computedOuterWidths[cellIndex];
                 const columnOptions = columns && columns[cellIndex].options
                     ? columns[cellIndex].options : {};
-                let [cellValue] = (row[cellIndex] || "").split("\n");
-
+                let cellStyle : Partial<CTTextStyle> = {};
+                if (row[cellIndex] as CTCustomCell)
+                {
+                    cellStyle = row[cellIndex] as CTTextStyle;
+                }
+                let [cellValue] = this.getCellValue( row[cellIndex] || "");
                 if (!rowIndex && header && header.background)
                 {
                     ctx.fillStyle = header.background;
                     ctx.fillRect(this.x, this.y, computedOuterWidth, lineHeight);
                 }
-                const customCellOpt = columnOptions?.customCells?.find( el => el.row == rowIndex);
-                const cellopt = customCellOpt ? customCellOpt : {};
-
-                const option = header && !rowIndex ? header : {...cell, ...columnOptions, ...cellopt};
+                const option = header && !rowIndex ? header : {...cell, ...columnOptions, ...cellStyle};
                 if (rowIndex &&  option.background)
                 {
                     ctx.fillStyle = option.background;
