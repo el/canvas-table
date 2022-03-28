@@ -10,9 +10,8 @@ export type CTCustomCell =
      value: string;
  } & Partial<CTCell>;
  
-export type CTCellData = string | CTCustomCell;
 
-export type CTData = CTCellData[][];
+export type CTData = (string | CTCustomCell)[][];
 
 export type CTColumn =
 {

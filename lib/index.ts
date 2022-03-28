@@ -1,7 +1,7 @@
 import { Canvas } from "canvas";
 import defaultOptions from "./defaultOptions";
 import { writeFile } from "fs";
-import { CTConfig, CTData, CTInternalOptions, CTColumn, CTTitle, CTPadding, CTExtractedPadding, CTTableDimensions, CTCellData, CTCustomCell, CTTextStyle } from "./types"
+import { CTConfig, CTData, CTInternalOptions, CTColumn, CTTitle, CTPadding, CTExtractedPadding, CTTableDimensions, CTCustomCell } from "./types"
 
 export * from "./types";
 
@@ -132,17 +132,10 @@ export class CanvasTable
         };
     }
 
-    private getCellValue(value: CTCellData): string[]
+    private cellValue(data?: CTCustomCell | string): string[]
     {
-        let realvalue = "";
-        if (typeof value === "string") {
-            realvalue = value;
-        } 
-        else if( value as CTCustomCell) 
-        {
-            realvalue = ( value as CTCustomCell).value ?? "";
-        }
-        return realvalue.split("\n");
+            const value = (typeof data === "object" ? data.value : data) || "";
+            return value.split("\n") || "";
     }
 
     private calculateColumnTextWidths(): number[]
@@ -155,7 +148,7 @@ export class CanvasTable
             const row = data[rowIndex];
             for (const cellIndex in row)
             {
-                const [cellValue] = this.getCellValue(row[cellIndex] || "");
+                const [cellValue] = this.cellValue(row[cellIndex]);
                 const option = header && rowIndex === "0" ? header : cell;
 
                 ctx.font = `${option.fontWeight} ${option.fontSize}px ${option.fontFamily}`;
@@ -334,19 +327,10 @@ export class CanvasTable
             {
                 const computedOuterWidth = computedOuterWidths[cellIndex];
                 const columnOptions = columns && columns[cellIndex].options
-                    ? columns[cellIndex].options : {};
-                let cellStyle : Partial<CTTextStyle> = {};
-                if (row[cellIndex] as CTCustomCell)
-                {
-                    cellStyle = row[cellIndex] as CTTextStyle;
-                }
-                let [cellValue] = this.getCellValue( row[cellIndex] || "");
-                if (!rowIndex && header && header.background)
-                {
-                    ctx.fillStyle = header.background;
-                    ctx.fillRect(this.x, this.y, computedOuterWidth, lineHeight);
-                }
-                const option = header && !rowIndex ? header : {...cell, ...columnOptions, ...cellStyle};
+                    ? columns[cellIndex].options : {};    
+                const customCellStyles = typeof row[cellIndex] === "object" ? row[cellIndex] : {};
+                let [cellValue] = this.cellValue( row[cellIndex]);
+                const option = header && !rowIndex ? header : {...cell, ...columnOptions, ...customCellStyles};
                 if (rowIndex &&  option.background)
                 {
                     ctx.fillStyle = option.background;
