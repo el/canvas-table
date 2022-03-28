@@ -62,7 +62,7 @@ const config: CTConfig =
 ```ts
 const data: CTData = [
     ["cell 1", "cell 2", "cell 3"], // row 1
-    ["cell 1", "cell 2", "cell 3"] // row 2
+    ["cell 1", "cell 2", { value: "cell 3", color: "#990000" }] // row 2
 ];
 ```
 

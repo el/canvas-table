@@ -7,11 +7,11 @@ export type CTConfig =
 
 export type CTCustomCell = 
 {
-     value: string;
- } & Partial<CTCell>;
+    value?: string;
+} & Partial<CTCell>;
  
 
-export type CTData = (string | CTCustomCell)[][];
+export type CTData = (string | CTCustomCell | undefined)[][];
 
 export type CTColumn =
 {
@@ -91,6 +91,7 @@ export type CTFader =
 
 export type CTTextStyle =
 {
+    background?: string;
     fontSize: number;
     fontWeight: string;
     fontFamily: string;

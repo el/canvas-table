@@ -132,10 +132,10 @@ export class CanvasTable
         };
     }
 
-    private cellValue(data?: CTCustomCell | string): string[]
+    private cellValue(data?: CTCustomCell | string): string
     {
-            const value = (typeof data === "object" ? data.value : data) || "";
-            return value.split("\n") || "";
+        const value = (typeof data === "object" ? data.value : data) ?? "";
+        return value.split("\n")[0] ?? "";
     }
 
     private calculateColumnTextWidths(): number[]
@@ -148,7 +148,7 @@ export class CanvasTable
             const row = data[rowIndex];
             for (const cellIndex in row)
             {
-                const [cellValue] = this.cellValue(row[cellIndex]);
+                const cellValue = this.cellValue(row[cellIndex]);
                 const option = header && rowIndex === "0" ? header : cell;
 
                 ctx.font = `${option.fontWeight} ${option.fontSize}px ${option.fontFamily}`;
@@ -209,7 +209,6 @@ export class CanvasTable
                     remainingWidth = remainingWidth - columnOuterWidth;
                 }
             });
-            console.log({ fatColumnIndexes, totalFatWidth })
             fatColumnIndexes.forEach(index =>
             {
                 const columnOuterWidth = this.columnOuterWidths[index];
@@ -320,27 +319,36 @@ export class CanvasTable
 
         for (let rowIndex = 0; rowIndex < data.length; rowIndex++)
         {
+            const backgroundBorderWidth = 1;
             const row = data[rowIndex];
-            const lineHeight = cell.lineHeight * cell.fontSize + cellPadding.bottom + cellPadding.top;
+            const totalHeight = cell.lineHeight * cell.fontSize + cellPadding.bottom + cellPadding.top;
             this.x = tableStartX;
             for (const cellIndex in columnOuterWidths)
             {
                 const computedOuterWidth = computedOuterWidths[cellIndex];
+                const cellData = row[cellIndex];
+                const { value: _, ...customCellStyles }: CTCustomCell = typeof cellData === "object" ? cellData : {};
                 const columnOptions = columns && columns[cellIndex].options
-                    ? columns[cellIndex].options : {};    
-                const customCellStyles = typeof row[cellIndex] === "object" ? row[cellIndex] : {};
-                let [cellValue] = this.cellValue( row[cellIndex]);
-                const option = header && !rowIndex ? header : {...cell, ...columnOptions, ...customCellStyles};
-                if (rowIndex &&  option.background)
+                    ? columns[cellIndex].options : {};
+                let cellValue = this.cellValue(cellData);
+                const option = header && !rowIndex ? header : { ...cell, ...columnOptions, ...customCellStyles };
+                if (option.background)
                 {
                     ctx.fillStyle = option.background;
-                    ctx.fillRect(this.x, this.y, computedOuterWidth, lineHeight);
+                    ctx.fillRect(this.x + backgroundBorderWidth, this.y + backgroundBorderWidth,
+                        computedOuterWidth - backgroundBorderWidth * 2, totalHeight - backgroundBorderWidth * 2);
                 }
                 ctx.font = `${option.fontWeight} ${option.fontSize}px ${option.fontFamily}`;
-                ctx.fillStyle = option.color;
+                if (option.color)
+                {
+                    ctx.fillStyle = option.color;
+                }
                 const textAlign = columnOptions && columnOptions.textAlign
                     ? columnOptions.textAlign : option.textAlign;
-                ctx.textAlign = textAlign;
+                if (textAlign)
+                {
+                    ctx.textAlign = textAlign;
+                }
                 const textWidth = ctx.measureText(cellValue).width;
                 if (textWidth > computedOuterWidth)
                 {
@@ -370,10 +378,10 @@ export class CanvasTable
                 ctx.fillText(cellValue, cellX, cellY);
                 this.x += computedOuterWidth;
 
-                this.drawRowBorder(lineHeight);
+                this.drawRowBorder(totalHeight);
 
             }
-            this.y += lineHeight;
+            this.y += totalHeight;
             this.drawColumnBorder(rowIndex);
             if (this.y > canvasHeight)
             {
