@@ -1,7 +1,7 @@
 import { Canvas } from "canvas";
 import defaultOptions from "./defaultOptions";
 import { writeFile } from "fs";
-import { CTConfig, CTData, CTInternalOptions, CTColumn, CTTitle, CTPadding, CTExtractedPadding, CTTableDimensions } from "./types"
+import { CTConfig, CTData, CTInternalOptions, CTColumn, CTTitle, CTPadding, CTExtractedPadding, CTTableDimensions, CTCustomCell } from "./types"
 
 export * from "./types";
 
@@ -132,6 +132,12 @@ export class CanvasTable
         };
     }
 
+    private cellValue(data?: CTCustomCell | string): string[]
+    {
+            const value = (typeof data === "object" ? data.value : data) || "";
+            return value.split("\n") || "";
+    }
+
     private calculateColumnTextWidths(): number[]
     {
         const { columns, ctx, data, options: { cell, header } } = this;
@@ -142,7 +148,7 @@ export class CanvasTable
             const row = data[rowIndex];
             for (const cellIndex in row)
             {
-                const [cellValue] = (row[cellIndex] || "").split("\n");
+                const [cellValue] = this.cellValue(row[cellIndex]);
                 const option = header && rowIndex === "0" ? header : cell;
 
                 ctx.font = `${option.fontWeight} ${option.fontSize}px ${option.fontFamily}`;
@@ -321,15 +327,15 @@ export class CanvasTable
             {
                 const computedOuterWidth = computedOuterWidths[cellIndex];
                 const columnOptions = columns && columns[cellIndex].options
-                    ? columns[cellIndex].options : {};
-                let [cellValue] = (row[cellIndex] || "").split("\n");
-
-                if (!rowIndex && header && header.background)
+                    ? columns[cellIndex].options : {};    
+                const customCellStyles = typeof row[cellIndex] === "object" ? row[cellIndex] : {};
+                let [cellValue] = this.cellValue( row[cellIndex]);
+                const option = header && !rowIndex ? header : {...cell, ...columnOptions, ...customCellStyles};
+                if (rowIndex &&  option.background)
                 {
-                    ctx.fillStyle = header.background;
+                    ctx.fillStyle = option.background;
                     ctx.fillRect(this.x, this.y, computedOuterWidth, lineHeight);
                 }
-                const option = header && !rowIndex ? header : {...cell, ...columnOptions};
                 ctx.font = `${option.fontWeight} ${option.fontSize}px ${option.fontFamily}`;
                 ctx.fillStyle = option.color;
                 const textAlign = columnOptions && columnOptions.textAlign

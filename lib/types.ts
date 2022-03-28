@@ -5,7 +5,13 @@ export type CTConfig =
     options?: CTOptions;
 };
 
-export type CTData = string[][];
+export type CTCustomCell = 
+{
+     value: string;
+ } & Partial<CTCell>;
+ 
+
+export type CTData = (string | CTCustomCell)[][];
 
 export type CTColumn =
 {

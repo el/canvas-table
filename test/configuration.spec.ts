@@ -156,7 +156,7 @@ describe("CanvasTable", async() =>
                 { title: "Category" }
             ],
             data: [
-                ["1","4/20/2018","$638.45","Deposit","Fuel"],
+                ["1","4/20/2018",{color:"green", background:"yellow", value:"$638.45"},"Deposit","Fuel"],
                 ["2","1/9/2018","$627.71","Deposit","Technology"],
                 ["3","8/8/2019","$437.48","Withdrawal","Technology"],
                 ["4","6/1/2018","$281.74","Deposit","Technology"],
