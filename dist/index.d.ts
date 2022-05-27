@@ -1,0 +1,48 @@
+/// <reference types="node" />
+import { Canvas } from "canvas";
+import { CTConfig, CTTableDimensions } from "./types";
+export * from "./types";
+export declare class CanvasTable {
+    private static readonly ELLIPSIS;
+    private static readonly NOT_AVAILABLE_ON_BROWSER;
+    private static readonly NOT_AVAILABLE_ON_NODE;
+    private static readonly NOT_GENERATED_ERROR_MESSAGE;
+    private static readonly TRANSPARENT_COLOR;
+    private canvas_;
+    private canvasHeight;
+    private canvasWidth;
+    private columnOuterWidths;
+    private columns;
+    private computedOuterWidths;
+    private config;
+    private ctx;
+    private data;
+    private horizontalTotalPadding;
+    private isGenerated;
+    private options;
+    private tableHeight;
+    private tableStartX;
+    private tableStartY;
+    private tableWidth;
+    private x;
+    private y;
+    constructor(canvas: Canvas | HTMLCanvasElement, config: CTConfig);
+    generateTable(): Promise<void>;
+    renderToBlob(): Promise<Blob>;
+    renderToBuffer(): Promise<Buffer>;
+    renderToFile(filePath: string): Promise<void>;
+    tableDimensions(): CTTableDimensions;
+    private cellValue;
+    private calculateColumnTextWidths;
+    private calculateColumnWidths;
+    private calculateTableDimensions;
+    private calculatePadding;
+    private generateTitle;
+    private generateRows;
+    private drawColumnBorder;
+    private drawRowBorder;
+    private generateFaders;
+    private drawTableBorders;
+    private populateOptions;
+    private throwErrorIfNotGenerated;
+}
