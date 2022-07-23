@@ -40,6 +40,7 @@ export const defaultOptions: CTInternalOptions = {
         bottom: true
     },
     fit: false,
+    hideHeader: false,
     minCharWidth: 3,
     padding: {
         bottom: 20,

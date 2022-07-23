@@ -92,7 +92,7 @@ const columns: CTColumns = [
 const options: CTOptions = {
     borders: {
         column: undefined,
-        header: undefined,
+        header: undefined, // set to false to hide the header
         row: { width: 1, color: "#555" },
         table: { width: 2, color: "#aaa" }
     }

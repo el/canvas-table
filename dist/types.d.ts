@@ -16,7 +16,7 @@ export declare type CTColumn = {
 };
 export declare type CTOptions = {
     borders?: Partial<CTBorders>;
-    header?: Partial<CTHeader>;
+    header?: Partial<CTHeader> | false;
     cell?: Partial<CTCell>;
     background?: string;
     devicePixelRatio?: number;
@@ -30,6 +30,7 @@ export declare type CTOptions = {
 export declare type CTInternalOptions = {
     borders: CTBorders;
     header: CTHeader;
+    hideHeader: boolean;
     cell: CTCell;
     background: string;
     devicePixelRatio: number;

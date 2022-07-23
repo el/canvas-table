@@ -272,13 +272,16 @@ class CanvasTable {
         this.y += lineIndex * lineHeight + lineHeight / 2;
     }
     generateRows() {
-        const { canvasHeight, columnOuterWidths, columns, computedOuterWidths, ctx, data, horizontalTotalPadding, options: { cell, header, minCharWidth }, tableStartX } = this;
+        const { canvasHeight, columnOuterWidths, columns, computedOuterWidths, ctx, data, horizontalTotalPadding, options: { cell, header, hideHeader, minCharWidth }, tableStartX } = this;
         const cellPadding = this.calculatePadding(cell.padding);
         for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
             const backgroundBorderWidth = 1;
             const row = data[rowIndex];
             const totalHeight = cell.lineHeight * cell.fontSize + cellPadding.bottom + cellPadding.top;
             this.x = tableStartX;
+            if (hideHeader && !rowIndex) {
+                continue;
+            }
             for (const cellIndex in columnOuterWidths) {
                 const computedOuterWidth = computedOuterWidths[cellIndex];
                 const cellData = row[cellIndex];
@@ -398,7 +401,7 @@ class CanvasTable {
         const defaultPadding = defaultOptions_1.default.padding;
         const padding = options.padding !== undefined ? (typeof options.padding !== "number"
             ? Object.assign(Object.assign({}, defaultPadding), options.padding) : options.padding) : defaultPadding;
-        this.options = Object.assign(Object.assign(Object.assign({}, defaultOptions_1.default), options), { borders: options.borders ? Object.assign(Object.assign({}, borders), options.borders) : borders, header: options.header ? Object.assign(Object.assign({}, header), options.header) : header, cell: options.cell ? Object.assign(Object.assign({}, cell), options.cell) : cell, fader: options.fader ? Object.assign(Object.assign({}, fader), options.fader) : fader, padding: padding, subtitle: options.subtitle ? Object.assign(Object.assign({}, subtitle), options.subtitle) : subtitle, title: options.title ? Object.assign(Object.assign({}, title), options.title) : title });
+        this.options = Object.assign(Object.assign(Object.assign({}, defaultOptions_1.default), options), { borders: options.borders ? Object.assign(Object.assign({}, borders), options.borders) : borders, header: options.header ? Object.assign(Object.assign({}, header), options.header) : header, hideHeader: options.header === false, cell: options.cell ? Object.assign(Object.assign({}, cell), options.cell) : cell, fader: options.fader ? Object.assign(Object.assign({}, fader), options.fader) : fader, padding: padding, subtitle: options.subtitle ? Object.assign(Object.assign({}, subtitle), options.subtitle) : subtitle, title: options.title ? Object.assign(Object.assign({}, title), options.title) : title });
     }
     throwErrorIfNotGenerated() {
         if (!this.isGenerated) {

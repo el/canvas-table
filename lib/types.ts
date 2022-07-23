@@ -25,7 +25,7 @@ export type CTColumn =
 export type CTOptions =
 {
     borders?: Partial<CTBorders>;
-    header?: Partial<CTHeader>;
+    header?: Partial<CTHeader> | false;
     cell?: Partial<CTCell>;
     background?: string;
     devicePixelRatio?: number;
@@ -41,6 +41,7 @@ export type CTInternalOptions =
 {
     borders: CTBorders;
     header: CTHeader;
+    hideHeader: boolean;
     cell: CTCell;
     background: string;
     devicePixelRatio: number;

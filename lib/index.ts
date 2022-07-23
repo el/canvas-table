@@ -314,7 +314,7 @@ export class CanvasTable
     private generateRows(): void
     {
         const { canvasHeight, columnOuterWidths, columns, computedOuterWidths, ctx, data, horizontalTotalPadding,
-            options: { cell, header, minCharWidth }, tableStartX } = this;
+            options: { cell, header, hideHeader, minCharWidth }, tableStartX } = this;
         const cellPadding = this.calculatePadding(cell.padding);
 
         for (let rowIndex = 0; rowIndex < data.length; rowIndex++)
@@ -323,6 +323,10 @@ export class CanvasTable
             const row = data[rowIndex];
             const totalHeight = cell.lineHeight * cell.fontSize + cellPadding.bottom + cellPadding.top;
             this.x = tableStartX;
+            if (hideHeader && !rowIndex)
+            {
+                continue;
+            }
             for (const cellIndex in columnOuterWidths)
             {
                 const computedOuterWidth = computedOuterWidths[cellIndex];
@@ -377,9 +381,7 @@ export class CanvasTable
                 }
                 ctx.fillText(cellValue, cellX, cellY);
                 this.x += computedOuterWidth;
-
                 this.drawRowBorder(totalHeight);
-
             }
             this.y += totalHeight;
             this.drawColumnBorder(rowIndex);
@@ -477,7 +479,8 @@ export class CanvasTable
             ...defaultOptions,
             ...options,
             borders: options.borders ? { ...borders, ...options.borders } : borders,
-            header: options.header ? { ...header, ...options.header } : header,
+            header: options.header ? { ...header, ...options.header } :  header,
+            hideHeader: options.header === false,
             cell: options.cell ? { ...cell, ...options.cell } : cell,
             fader: options.fader ? { ...fader, ...options.fader } : fader,
             padding: padding,

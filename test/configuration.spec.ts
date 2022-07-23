@@ -207,6 +207,21 @@ describe("CanvasTable", async() =>
         await ct.generateTable();
         await ct.renderToFile(join(testDirectory,"test-small.png"));
     });
+
+    it("renders a table with no header", async () =>
+    {
+        const canvas = createCanvas(640, 300);
+        const config: CTConfig = {
+            columns,
+            data,
+            options: {
+                header: false
+            }
+        };
+        const ct = new CanvasTable(canvas, config);
+        await ct.generateTable();
+        await ct.renderToFile(join(testDirectory,"test-no-header.png"));
+    });
     
     it("renders a table", async () =>
     {
