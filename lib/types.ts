@@ -39,7 +39,7 @@ export type CTEvents =
     tableBordersCreated?: CTEventCallback;
     tableCreated?: CTEventCallback;
     titleCreated?: CTEventCallback;
-}
+};
 
 export type CTOptions =
 {

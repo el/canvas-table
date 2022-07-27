@@ -1,7 +1,7 @@
 # Canvas Table
-Customizable, small and fast table implementation in Canvas with string truncating support. Supports both browser [HTML5 canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) and [node-canvas](https://github.com/Automattic/node-canvas) Main usecase for this package is to use it to create table images in NodeJS. 
+Customizable, small and fast table implementation in Canvas with string truncating support. Supports both browser [HTML5 canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) and [node-canvas](https://github.com/Automattic/node-canvas) Main usecase for this package is to use it to create table images in NodeJS.
 
-<a href="https://github.com/el/canvas-table/actions?workflow=node">![](https://github.com/el/canvas-table/workflows/node/badge.svg)</a> ![](https://img.shields.io/bundlephobia/min/canvas-table) <a href="https://www.npmjs.com/package/canvas-table">![](https://img.shields.io/npm/v/canvas-table)</a> ![](https://img.shields.io/npm/types/canvas-table) ![](https://img.shields.io/npm/l/canvas-table) 
+<a href="https://github.com/el/canvas-table/actions?workflow=node">![](https://github.com/el/canvas-table/workflows/node/badge.svg)</a> ![](https://img.shields.io/bundlephobia/min/canvas-table) <a href="https://www.npmjs.com/package/canvas-table">![](https://img.shields.io/npm/v/canvas-table)</a> ![](https://img.shields.io/npm/types/canvas-table) ![](https://img.shields.io/npm/l/canvas-table)
 
 ## Demo
 
@@ -53,6 +53,7 @@ const config: CTConfig =
 {
     data: CTData;
     columns: CTColumn[];
+    events?: CTEvents;
     options?: CTOptions;
 };
 ```
@@ -75,7 +76,7 @@ const columns: CTColumns = [
     {
         title: "Column 3",
         options: {
-            textAlign: "right", 
+            textAlign: "right",
             fontSize: 14,
             fontWeight: "bold",
             fontFamily: "serif",
@@ -97,6 +98,22 @@ const options: CTOptions = {
         table: { width: 2, color: "#aaa" }
     }
 }
+```
+
+**events** (optional)
+```ts
+const events: CTEvents =
+{
+    cellCreated: (canvas, x, y, data: { cellIndex, rowIndex }) => console.log({ canvas, x, y, cellIndex, rowIndex }),
+    fadersCreated: (canvas, x, y) => console.log({ canvas, x, y }),
+    headerCreated: (canvas, x, y) => console.log({ canvas, x, y }),
+    rowCreated: (canvas, x, y, { rowIndex }) => console.log({ canvas, x, y, rowIndex }),
+    rowsCreated: (canvas, x, y) => console.log({ canvas, x, y }),
+    subtitleCreated: (canvas, x, y) => console.log({ canvas, x, y }),
+    tableBordersCreated: (canvas, x, y) => console.log({ canvas, x, y }),
+    tableCreated: (canvas, x, y) => console.log({ canvas, x, y }),
+    titleCreated: (canvas, x, y) => console.log({ canvas, x, y }),
+};
 ```
 
 *defaultOptions*
