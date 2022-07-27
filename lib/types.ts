@@ -1,5 +1,3 @@
-import { Canvas } from "canvas";
-
 export type CTConfig =
 {
     columns: CTColumn[];
@@ -25,8 +23,7 @@ export type CTColumn =
     title: string
 };
 
-export type CTEventCallback = (canvas: Canvas | HTMLCanvasElement, x: number, y: number, data?: object)
-    => void | Promise<void>;
+export type CTEventCallback = (canvas: any, x: number, y: number, data?: object) => void | Promise<void>;
 
 export type CTEvents =
 {

@@ -1,4 +1,3 @@
-import { Canvas } from "canvas";
 export declare type CTConfig = {
     columns: CTColumn[];
     data: CTData;
@@ -16,7 +15,7 @@ export declare type CTColumn = {
     };
     title: string;
 };
-export declare type CTEventCallback = (canvas: Canvas | HTMLCanvasElement, x: number, y: number, data?: object) => void | Promise<void>;
+export declare type CTEventCallback = (canvas: any, x: number, y: number, data?: object) => void | Promise<void>;
 export declare type CTEvents = {
     cellCreated?: CTEventCallback;
     fadersCreated?: CTEventCallback;
