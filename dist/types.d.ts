@@ -1,6 +1,8 @@
+import { Canvas } from "canvas";
 export declare type CTConfig = {
-    data: CTData;
     columns: CTColumn[];
+    data: CTData;
+    events?: CTEvents;
     options?: CTOptions;
 };
 export declare type CTCustomCell = {
@@ -13,6 +15,18 @@ export declare type CTColumn = {
         minWidth?: number;
     };
     title: string;
+};
+export declare type CTEventCallback = (canvas: Canvas | HTMLCanvasElement, x: number, y: number, data?: object) => void | Promise<void>;
+export declare type CTEvents = {
+    cellCreated?: CTEventCallback;
+    fadersCreated?: CTEventCallback;
+    headerCreated?: CTEventCallback;
+    rowCreated?: CTEventCallback;
+    rowsCreated?: CTEventCallback;
+    subtitleCreated?: CTEventCallback;
+    tableBordersCreated?: CTEventCallback;
+    tableCreated?: CTEventCallback;
+    titleCreated?: CTEventCallback;
 };
 export declare type CTOptions = {
     borders?: Partial<CTBorders>;

@@ -68,27 +68,28 @@ class CanvasTable {
     }
     generateTable() {
         return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
                 const { options: { padding, title, subtitle } } = this;
                 const tablePadding = this.calculatePadding(padding);
                 this.y = tablePadding.top;
                 this.x = tablePadding.left;
                 try {
-                    this.generateTitle(title);
-                    this.generateTitle(subtitle);
+                    yield this.generateTitle(title, "titleCreated");
+                    yield this.generateTitle(subtitle, "subtitleCreated");
                     this.calculateColumnWidths();
                     this.tableStartX = this.x;
                     this.tableStartY = this.y;
-                    this.generateRows();
-                    this.generateFaders();
-                    this.drawTableBorders();
+                    yield this.generateRows();
+                    yield this.generateFaders();
+                    yield this.drawTableBorders();
                 }
                 catch (error) {
                     reject(error);
                 }
                 this.isGenerated = true;
+                yield this.fireEvent("tableCreated");
                 resolve();
-            });
+            }));
         });
     }
     renderToBlob() {
@@ -227,114 +228,136 @@ class CanvasTable {
         }
         return value;
     }
-    generateTitle(title) {
-        const { ctx, tableWidth, x, y } = this;
-        if (!title.text) {
-            return;
-        }
-        ctx.font = `${title.fontWeight} ${title.fontSize}px ${title.fontFamily}`;
-        ctx.fillStyle = title.color;
-        ctx.textAlign = title.textAlign;
-        const lineHeight = Math.round(title.fontSize * title.lineHeight);
-        const titleLines = title.text.split("\n");
-        const titleX = title.textAlign === "center" ? tableWidth / 2 : 0;
-        let lineIndex = 0;
-        const isFat = (text) => ctx.measureText(text).width > this.tableWidth;
-        titleLines.forEach((line) => {
-            const innerLines = [];
-            if (title.multiline) {
-                innerLines.push("");
-                const lineArray = line.split(" ");
-                lineArray.forEach((lineValue) => {
-                    const index = innerLines.length - 1;
-                    const nextValue = `${innerLines[index]} ${lineValue}`;
-                    if (isFat(nextValue)) {
-                        innerLines.push(lineValue);
-                    }
-                    else {
-                        innerLines[index] = nextValue;
-                    }
-                });
+    fireEvent(eventName, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { events } = this.config;
+            const callback = (events !== null && events !== void 0 ? events : {})[eventName];
+            if (!callback) {
+                return;
             }
-            else {
-                let cellValue = line;
-                const valueWithEllipsis = () => `${cellValue}${CanvasTable.ELLIPSIS}`;
-                if (isFat(valueWithEllipsis())) {
-                    while (isFat(valueWithEllipsis())) {
-                        cellValue = cellValue.slice(0, -1);
-                    }
-                    cellValue = valueWithEllipsis();
-                }
-                innerLines.push(cellValue);
+            const promise = callback(this.canvas_, this.x, this.y, data);
+            if (!promise) {
+                return;
             }
-            innerLines.forEach(innerLine => ctx.fillText(innerLine, x + titleX, y + lineIndex++ * lineHeight));
+            yield promise;
         });
-        this.y += lineIndex * lineHeight + lineHeight / 2;
+    }
+    generateTitle(title, event) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { ctx, tableWidth, x, y } = this;
+            if (!title.text) {
+                return;
+            }
+            ctx.font = `${title.fontWeight} ${title.fontSize}px ${title.fontFamily}`;
+            ctx.fillStyle = title.color;
+            ctx.textAlign = title.textAlign;
+            const lineHeight = Math.round(title.fontSize * title.lineHeight);
+            const titleLines = title.text.split("\n");
+            const titleX = title.textAlign === "center" ? tableWidth / 2 : 0;
+            let lineIndex = 0;
+            const isFat = (text) => ctx.measureText(text).width > this.tableWidth;
+            titleLines.forEach((line) => {
+                const innerLines = [];
+                if (title.multiline) {
+                    innerLines.push("");
+                    const lineArray = line.split(" ");
+                    lineArray.forEach((lineValue) => {
+                        const index = innerLines.length - 1;
+                        const nextValue = `${innerLines[index]} ${lineValue}`;
+                        if (isFat(nextValue)) {
+                            innerLines.push(lineValue);
+                        }
+                        else {
+                            innerLines[index] = nextValue;
+                        }
+                    });
+                }
+                else {
+                    let cellValue = line;
+                    const valueWithEllipsis = () => `${cellValue}${CanvasTable.ELLIPSIS}`;
+                    if (isFat(valueWithEllipsis())) {
+                        while (isFat(valueWithEllipsis())) {
+                            cellValue = cellValue.slice(0, -1);
+                        }
+                        cellValue = valueWithEllipsis();
+                    }
+                    innerLines.push(cellValue);
+                }
+                innerLines.forEach(innerLine => ctx.fillText(innerLine, x + titleX, y + lineIndex++ * lineHeight));
+            });
+            this.y += lineIndex * lineHeight + lineHeight / 2;
+            yield this.fireEvent(event);
+        });
     }
     generateRows() {
-        const { canvasHeight, columnOuterWidths, columns, computedOuterWidths, ctx, data, horizontalTotalPadding, options: { cell, header, hideHeader, minCharWidth }, tableStartX } = this;
-        const cellPadding = this.calculatePadding(cell.padding);
-        for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
-            const backgroundBorderWidth = 1;
-            const row = data[rowIndex];
-            const totalHeight = cell.lineHeight * cell.fontSize + cellPadding.bottom + cellPadding.top;
-            this.x = tableStartX;
-            if (hideHeader && !rowIndex) {
-                continue;
-            }
-            for (const cellIndex in columnOuterWidths) {
-                const computedOuterWidth = computedOuterWidths[cellIndex];
-                const cellData = row[cellIndex];
-                const _a = typeof cellData === "object" ? cellData : {}, { value: _ } = _a, customCellStyles = __rest(_a, ["value"]);
-                const columnOptions = columns && columns[cellIndex].options
-                    ? columns[cellIndex].options : {};
-                let cellValue = this.cellValue(cellData);
-                const option = header && !rowIndex ? header : Object.assign(Object.assign(Object.assign({}, cell), columnOptions), customCellStyles);
-                if (option.background) {
-                    ctx.fillStyle = option.background;
-                    ctx.fillRect(this.x + backgroundBorderWidth, this.y + backgroundBorderWidth, computedOuterWidth - backgroundBorderWidth * 2, totalHeight - backgroundBorderWidth * 2);
+        return __awaiter(this, void 0, void 0, function* () {
+            const { canvasHeight, columnOuterWidths, columns, computedOuterWidths, ctx, data, horizontalTotalPadding, options: { cell, header, hideHeader, minCharWidth }, tableStartX } = this;
+            const cellPadding = this.calculatePadding(cell.padding);
+            for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
+                const backgroundBorderWidth = 1;
+                const row = data[rowIndex];
+                const totalHeight = cell.lineHeight * cell.fontSize + cellPadding.bottom + cellPadding.top;
+                this.x = tableStartX;
+                if (hideHeader && !rowIndex) {
+                    continue;
                 }
-                ctx.font = `${option.fontWeight} ${option.fontSize}px ${option.fontFamily}`;
-                if (option.color) {
-                    ctx.fillStyle = option.color;
-                }
-                const textAlign = columnOptions && columnOptions.textAlign
-                    ? columnOptions.textAlign : option.textAlign;
-                if (textAlign) {
-                    ctx.textAlign = textAlign;
-                }
-                const textWidth = ctx.measureText(cellValue).width;
-                if (textWidth > computedOuterWidth) {
-                    const isFat = () => ctx.measureText(cellValue.length > minCharWidth
-                        ? `${cellValue}${CanvasTable.ELLIPSIS}`
-                        : `${cellValue}.`).width > (computedOuterWidth - horizontalTotalPadding);
-                    if (isFat()) {
-                        while (isFat()) {
-                            cellValue = cellValue.slice(0, -1);
-                            ;
-                        }
-                        cellValue = cellValue.length > minCharWidth
-                            ? `${cellValue}${CanvasTable.ELLIPSIS}` : `${cellValue}.`;
+                for (const cellIndex in columnOuterWidths) {
+                    const computedOuterWidth = computedOuterWidths[cellIndex];
+                    const cellData = row[cellIndex];
+                    const _a = typeof cellData === "object" ? cellData : {}, { value: _ } = _a, customCellStyles = __rest(_a, ["value"]);
+                    const columnOptions = columns && columns[cellIndex].options
+                        ? columns[cellIndex].options : {};
+                    let cellValue = this.cellValue(cellData);
+                    const option = header && !rowIndex ? header : Object.assign(Object.assign(Object.assign({}, cell), columnOptions), customCellStyles);
+                    if (option.background) {
+                        ctx.fillStyle = option.background;
+                        ctx.fillRect(this.x + backgroundBorderWidth, this.y + backgroundBorderWidth, computedOuterWidth - backgroundBorderWidth * 2, totalHeight - backgroundBorderWidth * 2);
                     }
+                    ctx.font = `${option.fontWeight} ${option.fontSize}px ${option.fontFamily}`;
+                    if (option.color) {
+                        ctx.fillStyle = option.color;
+                    }
+                    const textAlign = columnOptions && columnOptions.textAlign
+                        ? columnOptions.textAlign : option.textAlign;
+                    if (textAlign) {
+                        ctx.textAlign = textAlign;
+                    }
+                    const textWidth = ctx.measureText(cellValue).width;
+                    if (textWidth > computedOuterWidth) {
+                        const isFat = () => ctx.measureText(cellValue.length > minCharWidth
+                            ? `${cellValue}${CanvasTable.ELLIPSIS}`
+                            : `${cellValue}.`).width > (computedOuterWidth - horizontalTotalPadding);
+                        if (isFat()) {
+                            while (isFat()) {
+                                cellValue = cellValue.slice(0, -1);
+                                ;
+                            }
+                            cellValue = cellValue.length > minCharWidth
+                                ? `${cellValue}${CanvasTable.ELLIPSIS}` : `${cellValue}.`;
+                        }
+                    }
+                    let cellX = this.x + cellPadding.left;
+                    let cellY = this.y + cellPadding.top;
+                    if (textAlign === "right") {
+                        cellX = this.x + computedOuterWidth - cellPadding.right;
+                    }
+                    if (textAlign === "center") {
+                        cellX = this.x + computedOuterWidth / 2;
+                    }
+                    ctx.fillText(cellValue, cellX, cellY);
+                    this.x += computedOuterWidth;
+                    this.drawRowBorder(totalHeight);
+                    yield this.fireEvent("cellCreated", { cellIndex, rowIndex });
                 }
-                let cellX = this.x + cellPadding.left;
-                let cellY = this.y + cellPadding.top;
-                if (textAlign === "right") {
-                    cellX = this.x + computedOuterWidth - cellPadding.right;
+                this.y += totalHeight;
+                this.drawColumnBorder(rowIndex);
+                yield this.fireEvent("rowCreated", { rowIndex });
+                if (this.y > canvasHeight) {
+                    break;
                 }
-                if (textAlign === "center") {
-                    cellX = this.x + computedOuterWidth / 2;
-                }
-                ctx.fillText(cellValue, cellX, cellY);
-                this.x += computedOuterWidth;
-                this.drawRowBorder(totalHeight);
             }
-            this.y += totalHeight;
-            this.drawColumnBorder(rowIndex);
-            if (this.y > canvasHeight) {
-                break;
-            }
-        }
+            yield this.fireEvent("rowsCreated");
+        });
     }
     drawColumnBorder(rowIndex) {
         const { ctx, options: { borders, header }, tableStartX, x, y } = this;
@@ -362,34 +385,40 @@ class CanvasTable {
         ctx.stroke();
     }
     generateFaders() {
-        const { canvasHeight, canvasWidth, ctx, options: { background, fader }, x, y } = this;
-        if (!fader) {
-            return;
-        }
-        if (y > canvasHeight && fader.bottom) {
-            var bottomFader = ctx.createLinearGradient(0, canvasHeight - fader.size, 0, canvasHeight);
-            bottomFader.addColorStop(0, CanvasTable.TRANSPARENT_COLOR);
-            bottomFader.addColorStop(1, background);
-            ctx.fillStyle = bottomFader;
-            ctx.fillRect(0, canvasHeight - fader.size, canvasWidth, fader.size);
-        }
-        if (x > canvasWidth && fader.right) {
-            var rightFader = ctx.createLinearGradient(canvasWidth - fader.size, 0, canvasWidth, 0);
-            rightFader.addColorStop(0, CanvasTable.TRANSPARENT_COLOR);
-            rightFader.addColorStop(1, background);
-            ctx.fillStyle = rightFader;
-            ctx.fillRect(canvasWidth - fader.size, 0, fader.size, canvasHeight);
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            const { canvasHeight, canvasWidth, ctx, options: { background, fader }, x, y } = this;
+            if (!fader) {
+                return;
+            }
+            if (y > canvasHeight && fader.bottom) {
+                var bottomFader = ctx.createLinearGradient(0, canvasHeight - fader.size, 0, canvasHeight);
+                bottomFader.addColorStop(0, CanvasTable.TRANSPARENT_COLOR);
+                bottomFader.addColorStop(1, background);
+                ctx.fillStyle = bottomFader;
+                ctx.fillRect(0, canvasHeight - fader.size, canvasWidth, fader.size);
+            }
+            if (x > canvasWidth && fader.right) {
+                var rightFader = ctx.createLinearGradient(canvasWidth - fader.size, 0, canvasWidth, 0);
+                rightFader.addColorStop(0, CanvasTable.TRANSPARENT_COLOR);
+                rightFader.addColorStop(1, background);
+                ctx.fillStyle = rightFader;
+                ctx.fillRect(canvasWidth - fader.size, 0, fader.size, canvasHeight);
+            }
+            yield this.fireEvent("fadersCreated");
+        });
     }
     drawTableBorders() {
-        const { table } = this.options.borders;
-        if (!table) {
-            return;
-        }
-        const { ctx, tableStartX, tableStartY, x, y } = this;
-        ctx.strokeStyle = table.color;
-        ctx.lineWidth = table.width;
-        ctx.strokeRect(tableStartX, tableStartY, x - tableStartX, y - tableStartY);
+        return __awaiter(this, void 0, void 0, function* () {
+            const { table } = this.options.borders;
+            if (!table) {
+                return;
+            }
+            const { ctx, tableStartX, tableStartY, x, y } = this;
+            ctx.strokeStyle = table.color;
+            ctx.lineWidth = table.width;
+            ctx.strokeRect(tableStartX, tableStartY, x - tableStartX, y - tableStartY);
+            yield this.fireEvent("tableBordersCreated");
+        });
     }
     populateOptions() {
         const { options } = this.config;

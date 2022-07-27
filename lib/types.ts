@@ -1,15 +1,18 @@
+import { Canvas } from "canvas";
+
 export type CTConfig =
 {
-    data: CTData;
     columns: CTColumn[];
+    data: CTData;
+    events?: CTEvents;
     options?: CTOptions;
 };
 
-export type CTCustomCell = 
+export type CTCustomCell =
 {
     value?: string;
 } & Partial<CTCell>;
- 
+
 
 export type CTData = (string | CTCustomCell | undefined)[][];
 
@@ -21,6 +24,22 @@ export type CTColumn =
     };
     title: string
 };
+
+export type CTEventCallback = (canvas: Canvas | HTMLCanvasElement, x: number, y: number, data?: object)
+    => void | Promise<void>;
+
+export type CTEvents =
+{
+    cellCreated?: CTEventCallback;
+    fadersCreated?: CTEventCallback;
+    headerCreated?: CTEventCallback;
+    rowCreated?: CTEventCallback;
+    rowsCreated?: CTEventCallback;
+    subtitleCreated?: CTEventCallback;
+    tableBordersCreated?: CTEventCallback;
+    tableCreated?: CTEventCallback;
+    titleCreated?: CTEventCallback;
+}
 
 export type CTOptions =
 {

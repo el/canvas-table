@@ -1,7 +1,7 @@
 import { Canvas } from "canvas";
 import defaultOptions from "./defaultOptions";
 import { writeFile } from "fs";
-import { CTConfig, CTData, CTInternalOptions, CTColumn, CTTitle, CTPadding, CTExtractedPadding, CTTableDimensions, CTCustomCell } from "./types"
+import { CTConfig, CTData, CTInternalOptions, CTColumn, CTTitle, CTPadding, CTExtractedPadding, CTTableDimensions, CTCustomCell, CTEvents } from "./types"
 
 export * from "./types";
 
@@ -62,28 +62,30 @@ export class CanvasTable
 
     public async generateTable(): Promise<void>
     {
-        return new Promise((resolve, reject) =>
+        return new Promise(async(resolve, reject) =>
         {
             const { options: { padding, title, subtitle } } = this;
             const tablePadding = this.calculatePadding(padding);
             this.y = tablePadding.top;
             this.x = tablePadding.left;
             try {
-                this.generateTitle(title);
-                this.generateTitle(subtitle);
+                await this.generateTitle(title, "titleCreated");
+                await this.generateTitle(subtitle, "subtitleCreated");
                 this.calculateColumnWidths();
 
                 this.tableStartX = this.x;
                 this.tableStartY = this.y;
 
-                this.generateRows();
-                this.generateFaders();
-                this.drawTableBorders();
-            } catch (error)
+                await this.generateRows();
+                await this.generateFaders();
+                await this.drawTableBorders();
+            }
+            catch (error)
             {
                 reject(error);
             }
             this.isGenerated = true;
+            await this.fireEvent("tableCreated");
             resolve();
         });
     }
@@ -256,7 +258,23 @@ export class CanvasTable
         return value;
     }
 
-    private generateTitle(title: CTTitle): void
+    private async fireEvent(eventName: keyof CTEvents, data?: object): Promise<void>
+    {
+        const { events } = this.config;
+        const callback = (events ?? {})[eventName];
+        if (!callback)
+        {
+            return;
+        }
+        const promise = callback(this.canvas_, this.x, this.y, data);
+        if (!promise)
+        {
+            return;
+        }
+        await promise;
+    }
+
+    private async generateTitle(title: CTTitle, event: keyof CTEvents): Promise<void>
     {
         const { ctx, tableWidth, x, y } = this;
         if (!title.text)
@@ -309,9 +327,10 @@ export class CanvasTable
             innerLines.forEach(innerLine => ctx.fillText(innerLine, x + titleX, y + lineIndex++ * lineHeight));
         });
         this.y += lineIndex * lineHeight + lineHeight / 2;
+        await this.fireEvent(event);
     }
 
-    private generateRows(): void
+    private async generateRows(): Promise<void>
     {
         const { canvasHeight, columnOuterWidths, columns, computedOuterWidths, ctx, data, horizontalTotalPadding,
             options: { cell, header, hideHeader, minCharWidth }, tableStartX } = this;
@@ -382,14 +401,17 @@ export class CanvasTable
                 ctx.fillText(cellValue, cellX, cellY);
                 this.x += computedOuterWidth;
                 this.drawRowBorder(totalHeight);
+                await this.fireEvent("cellCreated", { cellIndex, rowIndex });
             }
             this.y += totalHeight;
             this.drawColumnBorder(rowIndex);
+            await this.fireEvent("rowCreated", { rowIndex });
             if (this.y > canvasHeight)
             {
                 break;
             }
         }
+        await this.fireEvent("rowsCreated");
     }
 
     private drawColumnBorder(rowIndex: number): void
@@ -423,7 +445,7 @@ export class CanvasTable
         ctx.stroke();
     }
 
-    private generateFaders(): void
+    private async generateFaders(): Promise<void>
     {
         const { canvasHeight, canvasWidth, ctx, options: { background, fader }, x, y } = this;
         if (!fader)
@@ -447,9 +469,10 @@ export class CanvasTable
             ctx.fillStyle = rightFader;
             ctx.fillRect(canvasWidth - fader.size, 0, fader.size, canvasHeight);
         }
+        await this.fireEvent("fadersCreated");
     }
 
-    private drawTableBorders(): void
+    private async drawTableBorders(): Promise<void>
     {
         const { table } = this.options.borders;
         if (!table)
@@ -461,6 +484,7 @@ export class CanvasTable
         ctx.strokeStyle = table.color;
         ctx.lineWidth = table.width;
         ctx.strokeRect(tableStartX, tableStartY, x - tableStartX, y - tableStartY);
+        await this.fireEvent("tableBordersCreated");
     }
 
     private populateOptions(): void

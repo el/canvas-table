@@ -24,7 +24,7 @@ describe("CanvasTable", async() =>
         {title: "Expenses", options: { textAlign: "right" }},
         {title: "Net", options: { textAlign: "right" }}
     ];
-    
+
     it("renders a table", async () =>
     {
         const canvas = createCanvas(640, 250);
@@ -33,7 +33,7 @@ describe("CanvasTable", async() =>
         await ct.generateTable();
         await ct.renderToFile(join(testDirectory,"test-table.png"));
     });
-    
+
     it("renders a table with a title", async () =>
     {
         const canvas = createCanvas(640, 250);
@@ -42,7 +42,7 @@ describe("CanvasTable", async() =>
         await ct.generateTable();
         await ct.renderToFile(join(testDirectory,"test-title.png"));
     });
-    
+
     it("renders a table with a long title", async () =>
     {
         const canvas = createCanvas(250, 250);
@@ -51,7 +51,7 @@ describe("CanvasTable", async() =>
         await ct.generateTable();
         await ct.renderToFile(join(testDirectory,"test-title-long.png"));
     });
-    
+
     it("renders a table with a long multi-line title", async () =>
     {
         const canvas = createCanvas(250, 400);
@@ -60,7 +60,7 @@ describe("CanvasTable", async() =>
         await ct.generateTable();
         await ct.renderToFile(join(testDirectory,"test-multi-line.png"));
     });
-    
+
     it("renders a fitted table", async () =>
     {
         const canvas = createCanvas(640, 250);
@@ -69,7 +69,7 @@ describe("CanvasTable", async() =>
         await ct.generateTable();
         await ct.renderToFile(join(testDirectory,"test-fit.png"));
     });
-    
+
     it("renders a table with min and max width", async () =>
     {
         const canvas = createCanvas(640, 250);
@@ -85,7 +85,7 @@ describe("CanvasTable", async() =>
         await ct.generateTable();
         await ct.renderToFile(join(testDirectory,"test-width.png"));
     });
-    
+
     it("renders a table with min and max width with a big table", async () =>
     {
         const canvas = createCanvas(400, 250);
@@ -102,7 +102,7 @@ describe("CanvasTable", async() =>
         await ct.renderToFile(join(testDirectory,"test-width-big.png"));
     });
 
-    it("renders a table with long data", async () =>
+    it("renders a table with long data text", async () =>
     {
         const canvas = createCanvas(640, 250);
         const config: CTConfig = { data: [
@@ -199,7 +199,7 @@ describe("CanvasTable", async() =>
                     bottom: true,
                     right: true,
                     size: 20
-                }, 
+                },
                 padding: 0
             }
         };
@@ -222,8 +222,8 @@ describe("CanvasTable", async() =>
         await ct.generateTable();
         await ct.renderToFile(join(testDirectory,"test-no-header.png"));
     });
-    
-    it("renders a table", async () =>
+
+    it("renders a custom table", async () =>
     {
         const canvas = new FakeCanvas(640, 250);
         const config: CTConfig = { columns, data: [["1", "2", "3"]] };
@@ -259,5 +259,4 @@ describe("CanvasTable", async() =>
         ];
         expect(ctx.methods()).to.have.deep.ordered.members(stack);
     });
-
 });
